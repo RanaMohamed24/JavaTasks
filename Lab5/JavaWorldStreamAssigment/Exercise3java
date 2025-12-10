@@ -1,0 +1,25 @@
+
+import java.util.Objects;
+import java.util.Optional;
+
+import static java.lang.System.out;
+import static java.util.Comparator.comparing;
+
+public class Exercise5 {
+
+    public static void main(String[] args) {
+        CountryDao countryDao = InMemoryWorldDao.getInstance();
+          // EX3: Find the highest populated capital city
+        Optional<City> highestPopulatedCapital = countryDao.findAllCountries().stream()
+                .map(country -> country.getCities().stream()
+                        .filter(city -> city.getId() == country.getCapital())
+                        .findFirst()
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .max(comparing(City::getPopulation));
+
+        highestPopulatedCapital.ifPresent(capital -> out
+                .println("Highest populated capital: " + capital.getName() + " (" + capital.getPopulation() + ")"));
+    }
+
+}
